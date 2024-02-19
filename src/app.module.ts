@@ -13,6 +13,9 @@ import { LessonsModule } from './lessons/lessons.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { LessonEntity } from './lessons/entities/lesson.entity';
 import { ReviewsEntity } from './reviews/entities/review.entity';
+import { MessagesModule } from './messages/messages.module';
+import { DialogsModule } from './dialogs/dialogs.module';
+import { ReservedLessonsModule } from './reserved-lessons/reserved-lessons.module';
 
 @Module({
   imports: [
@@ -47,6 +50,9 @@ import { ReviewsEntity } from './reviews/entities/review.entity';
     FilesModule,
     LessonsModule,
     ReviewsModule,
+    MessagesModule,
+    DialogsModule,
+    ReservedLessonsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

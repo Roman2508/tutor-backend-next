@@ -1,14 +1,14 @@
 import { LessonEntity } from 'src/lessons/entities/lesson.entity';
+import { ReservedLessonEntity } from 'src/reserved-lessons/entities/reserved-lesson.entity';
 import { StudentEntity } from 'src/student/entities/student.entity';
 import { TutorEntity } from 'src/tutors/entities/tutor.entity';
 import {
   Column,
-  CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
+  CreateDateColumn,
   UpdateDateColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity('files')
@@ -28,14 +28,11 @@ export class FileEntity {
   @Column()
   mimetype: string;
 
-  @ManyToOne(() => LessonEntity, (lesson) => lesson.files)
-  lesson: LessonEntity;
+  @ManyToOne(() => ReservedLessonEntity, (lesson) => lesson.files)
+  lesson: ReservedLessonEntity;
 
   @Column()
-  type: string;
-
-  @ManyToOne(() => TutorEntity || StudentEntity)
-  author: TutorEntity | StudentEntity;
+  authorRole: 'tutor' | 'student';
 
   @CreateDateColumn()
   createdAt: Date;
