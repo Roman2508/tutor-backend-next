@@ -13,6 +13,11 @@ export class LessonEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  // Назва дисципліни
+  @IsNotEmpty()
+  @Column()
+  name: string;
+
   // Ціна уроку
   @IsNotEmpty()
   @Column()

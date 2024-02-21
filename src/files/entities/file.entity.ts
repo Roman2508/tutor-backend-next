@@ -1,7 +1,5 @@
-import { LessonEntity } from 'src/lessons/entities/lesson.entity';
 import { ReservedLessonEntity } from 'src/reserved-lessons/entities/reserved-lesson.entity';
-import { StudentEntity } from 'src/student/entities/student.entity';
-import { TutorEntity } from 'src/tutors/entities/tutor.entity';
+
 import {
   Column,
   Entity,

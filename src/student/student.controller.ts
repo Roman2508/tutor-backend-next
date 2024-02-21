@@ -1,34 +1,35 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
+import { AuthDto } from 'src/auth/dto/auth.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('student')
+@ApiTags('student')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
-  @Post()
-  create(@Body() createStudentDto: CreateStudentDto) {
-    return this.studentService.create(createStudentDto);
-  }
-
   @Get()
-  findAll() {
-    return this.studentService.findAll();
+  findByEmail(@Body() email: string) {
+    return this.studentService.findByEmail(email);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.studentService.findOne(+id);
+  findById(@Param('id') id: string) {
+    return this.studentService.findById(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateStudentDto: UpdateStudentDto) {
-    return this.studentService.update(+id, updateStudentDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.studentService.remove(+id);
+  @Post()
+  create(@Body() dto: AuthDto) {
+    return this.studentService.create(dto);
   }
 }

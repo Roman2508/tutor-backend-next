@@ -5,10 +5,9 @@ import { ReservedLessonEntity } from 'src/reserved-lessons/entities/reserved-les
 import { ReviewsEntity } from 'src/reviews/entities/review.entity';
 import {
   Column,
-  CreateDateColumn,
   Entity,
-  ManyToOne,
   OneToMany,
+  CreateDateColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -19,7 +18,7 @@ export class TutorEntity {
 
   @IsNotEmpty()
   @Column({ default: 'tutor' })
-  role: 'tutor';
+  userRole: 'tutor';
 
   @Max(40)
   @Column()
@@ -37,7 +36,7 @@ export class TutorEntity {
   @IsNotEmpty()
   password: string;
 
-  @Column({ default: null })
+  @Column({ default: '' })
   avatarUrl: string;
 
   @Column()
@@ -49,14 +48,11 @@ export class TutorEntity {
   @Column({ default: 0 })
   rating: number;
 
+  @Column({ default: 0 })
+  studentsCount: number;
+
   @OneToMany(() => ReviewsEntity, (reviews) => reviews.recipient)
   reviews: ReviewsEntity[];
-
-  @Column()
-  calendar: string;
-
-  @Column()
-  studentsCount: number;
 
   @OneToMany(() => DialogEntity, (dialog) => dialog.tutor)
   dialogs: DialogEntity[];

@@ -11,34 +11,30 @@ import { TutorsService } from './tutors.service';
 import { CreateTutorDto } from './dto/create-tutor.dto';
 import { UpdateTutorDto } from './dto/update-tutor.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthDto } from 'src/auth/dto/auth.dto';
 
 @Controller('tutors')
 @ApiTags('tutors')
 export class TutorsController {
   constructor(private readonly tutorsService: TutorsService) {}
 
-  @Post()
-  create(@Body() createTutorDto: CreateTutorDto) {
-    return this.tutorsService.create(createTutorDto);
-  }
-
   @Get()
-  findAll() {
-    return this.tutorsService.findAll();
+  findByEmail(@Body() email: string) {
+    return this.tutorsService.findByEmail(email);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tutorsService.findOne(+id);
+  findById(@Param('id') id: string) {
+    return this.tutorsService.findById(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTutorDto: UpdateTutorDto) {
-    return this.tutorsService.update(+id, updateTutorDto);
+  @Post()
+  create(@Body() dto: AuthDto) {
+    return this.tutorsService.create(dto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tutorsService.remove(+id);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateTutorDto: UpdateTutorDto) {
+  //   return this.tutorsService.update(+id, updateTutorDto);
+  // }
 }

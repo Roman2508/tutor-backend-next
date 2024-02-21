@@ -1,26 +1,44 @@
+import { Repository } from 'typeorm';
+import { genSalt, hash } from 'bcryptjs';
 import { Injectable } from '@nestjs/common';
-import { CreateTutorDto } from './dto/create-tutor.dto';
-import { UpdateTutorDto } from './dto/update-tutor.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { AuthDto } from 'src/auth/dto/auth.dto';
+import { TutorEntity } from './entities/tutor.entity';
 
 @Injectable()
 export class TutorsService {
-  create(createTutorDto: CreateTutorDto) {
-    return 'This action adds a new tutor';
+  constructor(
+    @InjectRepository(TutorEntity)
+    private repository: Repository<TutorEntity>,
+  ) {}
+
+  async create(dto: AuthDto) {
+    const salt = await genSalt(10);
+
+    const newUser = this.repository.create({
+      password: await hash(dto.password, salt),
+      userRole: dto.userRole as 'tutor',
+      email: dto.email,
+      name: dto.name,
+    });
+
+    const user = await this.repository.save(newUser);
+
+    const { password: pass, ...result } = user;
+
+    return result;
   }
 
-  findAll() {
-    return `This action returns all tutors`;
+  findById(id: number) {
+    return this.repository.findOneBy({ id });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} tutor`;
+  findByEmail(email: string) {
+    return this.repository.findOneBy({ email });
   }
 
-  update(id: number, updateTutorDto: UpdateTutorDto) {
-    return `This action updates a #${id} tutor`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} tutor`;
-  }
+  // update(id: number, updateTutorDto: UpdateTutorDto) {
+  //   return `This action updates a #${id} tutor`;
+  // }
 }

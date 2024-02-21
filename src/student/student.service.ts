@@ -1,26 +1,41 @@
+import { Repository } from 'typeorm';
+import { genSalt, hash } from 'bcryptjs';
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { StudentEntity } from './entities/student.entity';
 import { CreateStudentDto } from './dto/create-student.dto';
-import { UpdateStudentDto } from './dto/update-student.dto';
+import { AuthDto } from 'src/auth/dto/auth.dto';
 
 @Injectable()
 export class StudentService {
-  create(createStudentDto: CreateStudentDto) {
-    return 'This action adds a new student';
+  constructor(
+    @InjectRepository(StudentEntity)
+    private repository: Repository<StudentEntity>,
+  ) {}
+
+  findById(id: number) {
+    return this.repository.findOneBy({ id });
   }
 
-  findAll() {
-    return `This action returns all student`;
+  findByEmail(email: string) {
+    return this.repository.findOneBy({ email });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} student`;
-  }
+  async create(dto: AuthDto) {
+    const salt = await genSalt(10);
 
-  update(id: number, updateStudentDto: UpdateStudentDto) {
-    return `This action updates a #${id} student`;
-  }
+    const newUser = this.repository.create({
+      password: await hash(dto.password, salt),
+      userRole: dto.userRole as 'student',
+      email: dto.email,
+      name: dto.name,
+    });
 
-  remove(id: number) {
-    return `This action removes a #${id} student`;
+    const user = await this.repository.save(newUser);
+
+    const { password: pass, ...result } = user;
+
+    return result;
   }
 }

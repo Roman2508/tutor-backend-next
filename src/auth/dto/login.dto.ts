@@ -1,17 +1,17 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsString, MinLength } from 'class-validator';
 
-export class CreateStudentDto {
+export class LoginDto {
+  @ApiProperty()
   @IsEmail()
   email: string;
 
+  @ApiProperty()
   @MinLength(6, { message: 'Мінімальна довжина паролю 6 символів' })
   @IsString()
   password: string;
 
-  @MinLength(3, { message: 'Мінімальна довжина 3 символа' })
+  @ApiProperty()
   @IsString()
-  name: string;
-
-  @IsString()
-  userRole: 'student';
+  userRole: 'tutor' | 'student';
 }

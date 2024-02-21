@@ -16,6 +16,10 @@ import { ReviewsEntity } from './reviews/entities/review.entity';
 import { MessagesModule } from './messages/messages.module';
 import { DialogsModule } from './dialogs/dialogs.module';
 import { ReservedLessonsModule } from './reserved-lessons/reserved-lessons.module';
+import { ReservedLessonEntity } from './reserved-lessons/entities/reserved-lesson.entity';
+import { DialogEntity } from './dialogs/entities/dialog.entity';
+import { MessageEntity } from './messages/entities/message.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -29,9 +33,12 @@ import { ReservedLessonsModule } from './reserved-lessons/reserved-lessons.modul
       entities: [
         TutorEntity,
         StudentEntity,
-        FileEntity,
         LessonEntity,
+        ReservedLessonEntity,
+        FileEntity,
         ReviewsEntity,
+        DialogEntity,
+        MessageEntity,
       ],
       synchronize: true,
     }),
@@ -53,6 +60,7 @@ import { ReservedLessonsModule } from './reserved-lessons/reserved-lessons.modul
     MessagesModule,
     DialogsModule,
     ReservedLessonsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

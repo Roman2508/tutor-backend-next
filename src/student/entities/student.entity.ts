@@ -17,7 +17,7 @@ export class StudentEntity {
 
   @IsNotEmpty()
   @Column({ default: 'student' })
-  role: 'student';
+  userRole: 'student';
 
   @Max(40)
   @IsNotEmpty()
@@ -37,12 +37,6 @@ export class StudentEntity {
 
   @Column({ default: '' })
   avatarUrl: string;
-
-  @Column()
-  calendar: string;
-
-  @Column()
-  messages: string;
 
   @OneToMany(() => DialogEntity, (dialog) => dialog.student)
   dialogs: DialogEntity[];
