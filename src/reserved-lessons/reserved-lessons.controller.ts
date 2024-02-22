@@ -1,20 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ReservedLessonsService } from './reserved-lessons.service';
 import { CreateReservedLessonDto } from './dto/create-reserved-lesson.dto';
 import { UpdateReservedLessonDto } from './dto/update-reserved-lesson.dto';
+import { FilterReservedLessonDto } from './dto/filter-reserved-lessons.dto';
 
 @Controller('reserved-lessons')
 export class ReservedLessonsController {
-  constructor(private readonly reservedLessonsService: ReservedLessonsService) {}
+  constructor(
+    private readonly reservedLessonsService: ReservedLessonsService,
+  ) {}
 
   @Post()
-  create(@Body() createReservedLessonDto: CreateReservedLessonDto) {
-    return this.reservedLessonsService.create(createReservedLessonDto);
+  create(@Body() dto: CreateReservedLessonDto) {
+    return this.reservedLessonsService.create(dto);
   }
 
-  @Get()
-  findAll() {
-    return this.reservedLessonsService.findAll();
+  @Get('')
+  findAll(@Body() dto: FilterReservedLessonDto) {
+    return this.reservedLessonsService.findAll(dto);
   }
 
   @Get(':id')
@@ -23,8 +34,8 @@ export class ReservedLessonsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReservedLessonDto: UpdateReservedLessonDto) {
-    return this.reservedLessonsService.update(+id, updateReservedLessonDto);
+  update(@Param('id') id: string, @Body() dto: UpdateReservedLessonDto) {
+    return this.reservedLessonsService.update(+id, dto);
   }
 
   @Delete(':id')

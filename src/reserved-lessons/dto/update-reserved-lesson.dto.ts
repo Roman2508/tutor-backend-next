@@ -1,4 +1,18 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateReservedLessonDto } from './create-reserved-lesson.dto';
+import { ApiProperty } from '@nestjs/swagger';
 
-export class UpdateReservedLessonDto extends PartialType(CreateReservedLessonDto) {}
+export class UpdateReservedLessonDto {
+  @ApiProperty()
+  theme: string;
+
+  @ApiProperty()
+  price: number;
+
+  @ApiProperty()
+  status: number;
+
+  @ApiProperty()
+  duration: number;
+
+  @ApiProperty()
+  startAt: Date;
+}

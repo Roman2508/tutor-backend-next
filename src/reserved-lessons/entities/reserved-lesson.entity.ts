@@ -11,7 +11,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity('lessons')
+@Entity('reserved-lessons')
 export class ReservedLessonEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -54,6 +54,9 @@ export class ReservedLessonEntity {
   @Column()
   meetUrl: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
   createdAt: Date;
 }

@@ -94,12 +94,15 @@ export class AuthService {
     const { id, userRole } = this.jwtService.decode(token);
 
     if (id && userRole === 'tutor') {
-      const user = await this.tutorService.findById(id);
+      const userData = await this.tutorService.findById(id);
+      const { password, ...user } = userData;
       return user;
     }
 
     if (id && userRole === 'student') {
-      const user = await this.studentService.findById(id);
+      const userData = await this.studentService.findById(id);
+      const { password, ...user } = userData;
+
       return user;
     }
 

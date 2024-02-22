@@ -1,4 +1,12 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateLessonDto } from './create-lesson.dto';
+import { ApiProperty } from '@nestjs/swagger';
 
-export class UpdateLessonDto extends PartialType(CreateLessonDto) {}
+export class UpdateLessonDto {
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  price: number;
+
+  @ApiProperty()
+  duration: number;
+}

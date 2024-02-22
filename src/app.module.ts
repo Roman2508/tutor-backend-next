@@ -20,9 +20,11 @@ import { ReservedLessonEntity } from './reserved-lessons/entities/reserved-lesso
 import { DialogEntity } from './dialogs/entities/dialog.entity';
 import { MessageEntity } from './messages/entities/message.entity';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'tai.db.elephantsql.com',
