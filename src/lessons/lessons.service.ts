@@ -3,7 +3,7 @@ import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessonEntity } from './entities/lesson.entity';
-import { FindOptionsWhereProperty, ILike, Repository } from 'typeorm';
+import { FindOptionsWhereProperty, ILike, Between, Repository } from 'typeorm';
 import { FilterLessonDto } from './dto/filter-lesson.dto';
 
 @Injectable()
@@ -29,6 +29,10 @@ export class LessonsService {
 
     if (dto.tutorName) {
       options = { ...options, tutor: { name: ILike(`%${dto.tutorName}%`) } };
+    }
+
+    if (dto.price) {
+      options = { ...options, price: Between(dto.price[0], dto.price[1]) };
     }
 
     // [0] = fieldName; [1] = direction ASC or DESC

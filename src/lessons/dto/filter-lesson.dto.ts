@@ -8,6 +8,9 @@ export class FilterLessonDto {
   @ApiProperty()
   tutorName: string;
 
+  @ApiProperty({ default: [0, 3000] })
+  price: [number, number];
+
   @ApiProperty({ default: 'price-desc' })
   sortBy: 'price-desc' | 'price-asc' | 'reviews-desc' | 'rating-desc';
 
