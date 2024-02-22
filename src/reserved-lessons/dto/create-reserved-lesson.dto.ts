@@ -10,10 +10,10 @@ export class CreateReservedLessonDto {
   @ApiProperty()
   price: number;
 
-  @ApiProperty()
+  @ApiProperty({ default: 'planned' })
   status?: 'planned' | 'conducted';
 
-  @ApiProperty()
+  @ApiProperty({ default: 60 })
   duration: number;
 
   @ApiProperty()

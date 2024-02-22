@@ -11,8 +11,10 @@ import { ReservedLessonsService } from './reserved-lessons.service';
 import { CreateReservedLessonDto } from './dto/create-reserved-lesson.dto';
 import { UpdateReservedLessonDto } from './dto/update-reserved-lesson.dto';
 import { FilterReservedLessonDto } from './dto/filter-reserved-lessons.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('reserved-lessons')
+@ApiTags('reserved-lessons')
 export class ReservedLessonsController {
   constructor(
     private readonly reservedLessonsService: ReservedLessonsService,
@@ -23,7 +25,7 @@ export class ReservedLessonsController {
     return this.reservedLessonsService.create(dto);
   }
 
-  @Get('')
+  @Post('/get')
   findAll(@Body() dto: FilterReservedLessonDto) {
     return this.reservedLessonsService.findAll(dto);
   }

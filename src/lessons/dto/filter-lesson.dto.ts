@@ -1,14 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class FilterReservedLessonDto {
+export class FilterLessonDto {
+  // lesson name
   @ApiProperty()
   name: string;
 
   @ApiProperty()
-  student?: number;
-
-  @ApiProperty()
-  tutor?: number;
+  tutorName: string;
 
   @ApiProperty({ default: 'price-desc' })
   sortBy: 'price-desc' | 'price-asc' | 'reviews-desc' | 'rating-desc';

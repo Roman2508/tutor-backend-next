@@ -11,6 +11,7 @@ import { LessonsService } from './lessons.service';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { FilterLessonDto } from './dto/filter-lesson.dto';
 
 @Controller('lessons')
 @ApiTags('lessons')
@@ -22,9 +23,9 @@ export class LessonsController {
     return this.lessonsService.create(dto);
   }
 
-  @Get(':id')
-  findAll(@Param('id') id: string) {
-    return this.lessonsService.findAll(+id);
+  @Post('/get')
+  findAll(@Body() dto: FilterLessonDto) {
+    return this.lessonsService.findAll(dto);
   }
 
   @Patch(':id')

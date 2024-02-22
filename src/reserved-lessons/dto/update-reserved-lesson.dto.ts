@@ -8,7 +8,7 @@ export class UpdateReservedLessonDto {
   price: number;
 
   @ApiProperty()
-  status: number;
+  status: 'planned' | 'conducted';
 
   @ApiProperty()
   duration: number;

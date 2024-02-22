@@ -5,6 +5,9 @@ export class UpdateLessonDto {
   name: string;
 
   @ApiProperty()
+  theme: string;
+
+  @ApiProperty()
   price: number;
 
   @ApiProperty()

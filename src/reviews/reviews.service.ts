@@ -1,26 +1,41 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
-import { UpdateReviewDto } from './dto/update-review.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ReviewsEntity } from './entities/review.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ReviewsService {
-  create(createReviewDto: CreateReviewDto) {
-    return 'This action adds a new review';
+  constructor(
+    @InjectRepository(ReviewsEntity)
+    private repository: Repository<ReviewsEntity>,
+  ) {}
+
+  create(dto: CreateReviewDto) {
+    const reviews = this.repository.create({
+      message: dto.message,
+      rating: dto.rating,
+      sender: { id: dto.sender },
+      recipient: { id: dto.recipient },
+    });
+
+    return this.repository.save(reviews);
   }
 
-  findAll() {
-    return `This action returns all reviews`;
+  findAll(id: number) {
+    return this.repository.find({
+      where: { recipient: { id: id } },
+      order: { createdAt: 'ASC' },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} review`;
-  }
+  async remove(id: number) {
+    const res = await this.repository.delete(id);
 
-  update(id: number, updateReviewDto: UpdateReviewDto) {
-    return `This action updates a #${id} review`;
-  }
+    if (res.affected === 0) {
+      throw new NotFoundException('Відгук не знайдено');
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} review`;
+    return id;
   }
 }

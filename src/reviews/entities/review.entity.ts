@@ -1,7 +1,13 @@
 import { Max, Min } from 'class-validator';
 import { StudentEntity } from 'src/student/entities/student.entity';
 import { TutorEntity } from 'src/tutors/entities/tutor.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('reviews')
 export class ReviewsEntity {
@@ -21,4 +27,10 @@ export class ReviewsEntity {
   @Max(5)
   @Column()
   rating: number;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  createdAt: Date;
 }

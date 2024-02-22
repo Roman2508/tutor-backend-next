@@ -3,7 +3,8 @@ import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessonEntity } from './entities/lesson.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhereProperty, ILike, Repository } from 'typeorm';
+import { FilterLessonDto } from './dto/filter-lesson.dto';
 
 @Injectable()
 export class LessonsService {
@@ -17,19 +18,52 @@ export class LessonsService {
     return this.repository.save(lesson);
   }
 
-  findAll(id: number) {
-    return this.repository.find({
-      where: {
-        tutor: { id: id },
-      },
-      relations: { tutor: true },
+  async findAll(dto: FilterLessonDto) {
+    let options: FindOptionsWhereProperty<LessonEntity> = {};
+
+    if (dto.name) {
+      options = {
+        name: ILike(`%${dto.name}%`),
+      };
+    }
+
+    if (dto.tutorName) {
+      options = { ...options, tutor: { name: ILike(`%${dto.tutorName}%`) } };
+    }
+
+    // [0] = fieldName; [1] = direction ASC or DESC
+    const sortDirection = dto.sortBy.split('-');
+    const skip = dto.currentPage * dto.pageSize - dto.pageSize;
+
+    const [entities, count] = await this.repository.findAndCount({
+      where: { ...options },
+      order: { [sortDirection[0]]: sortDirection[1].toUpperCase() },
+      relations: { tutor: { lessons: true } },
       select: {
         tutor: {
           id: true,
           name: true,
+          reviews: true,
+          rating: true,
+          avatarUrl: true,
+          description: true,
+          studentsCount: true,
+          lessons: {
+            id: true,
+            name: true,
+          },
         },
       },
+      skip: skip,
+      take: dto.pageSize,
     });
+
+    return {
+      entities,
+      totalCount: count,
+      page: dto.currentPage,
+      size: dto.pageSize,
+    };
   }
 
   async update(id: number, dto: UpdateLessonDto) {
@@ -49,7 +83,7 @@ export class LessonsService {
     const res = await this.repository.delete(id);
 
     if (res.affected === 0) {
-      throw new NotFoundException('Групу не знайдено');
+      throw new NotFoundException('Урок не знайдено');
     }
 
     return id;
