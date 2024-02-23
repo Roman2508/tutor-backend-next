@@ -19,12 +19,21 @@ export class MessageEntity {
   @Column()
   text: string;
 
+  @Column({ default: false })
+  isReaded: boolean;
+
   @ManyToOne(() => TutorEntity || StudentEntity)
   sender: TutorEntity | StudentEntity;
+
+  @Column()
+  userRole: 'tutor' | 'student';
 
   @ManyToOne(() => DialogEntity, (dialog) => dialog.messages)
   dialog: DialogEntity;
 
-  @CreateDateColumn()
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
   sendAt: Date;
 }

@@ -1,26 +1,58 @@
-import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
+
+import { MessageEntity } from './entities/message.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
-import { UpdateMessageDto } from './dto/update-message.dto';
 
 @Injectable()
 export class MessagesService {
-  create(createMessageDto: CreateMessageDto) {
-    return 'This action adds a new message';
+  constructor(
+    @InjectRepository(MessageEntity)
+    private repository: Repository<MessageEntity>,
+  ) {}
+  async createMessage(dto: CreateMessageDto): Promise<MessageEntity> {
+    const messsage = this.repository.create({
+      sender: { id: dto.sender },
+      dialog: { id: dto.dialog },
+      userRole: dto.userRole,
+      text: dto.text,
+    });
+
+    await this.repository.save(messsage);
+
+    return this.repository.findOne({
+      where: { id: messsage.id },
+      relations: { sender: true, dialog: true },
+      select: {
+        sender: { id: true, name: true },
+        dialog: { id: true },
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all messages`;
+  async updateIsReading(id: number): Promise<MessageEntity> {
+    const messsage = await this.repository.findOne({ where: { id } });
+
+    if (!messsage) new NotFoundException('Повідомлення не знайдено');
+
+    return this.repository.save({ ...messsage, isReaded: true });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} message`;
+  // find messages by dialog id
+  async getMessages(id: number): Promise<MessageEntity[]> {
+    return await this.repository.find({
+      where: { dialog: { id } },
+      relations: { sender: true, dialog: true },
+      select: {
+        sender: { id: true, name: true },
+        dialog: { id: true },
+      },
+      order: { sendAt: 'ASC' },
+    });
   }
 
-  update(id: number, updateMessageDto: UpdateMessageDto) {
-    return `This action updates a #${id} message`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} message`;
+  removeMessage(id: number): Promise<number> {
+    return;
   }
 }

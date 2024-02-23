@@ -1,15 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { DialogsService } from './dialogs.service';
 import { CreateDialogDto } from './dto/create-dialog.dto';
-import { UpdateDialogDto } from './dto/update-dialog.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('dialogs')
 @Controller('dialogs')
 export class DialogsController {
   constructor(private readonly dialogsService: DialogsService) {}
 
   @Post()
-  create(@Body() createDialogDto: CreateDialogDto) {
-    return this.dialogsService.create(createDialogDto);
+  create(@Body() dto: CreateDialogDto) {
+    return this.dialogsService.create(dto);
   }
 
   @Get()
@@ -20,11 +29,6 @@ export class DialogsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.dialogsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDialogDto: UpdateDialogDto) {
-    return this.dialogsService.update(+id, updateDialogDto);
   }
 
   @Delete(':id')
