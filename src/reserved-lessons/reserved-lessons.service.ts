@@ -1,11 +1,29 @@
+import { google } from 'googleapis';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { FindOptionsWhereProperty, ILike, Repository } from 'typeorm';
 
+import Meeting from './google-meet-api';
 import { ReservedLessonEntity } from './entities/reserved-lesson.entity';
 import { CreateReservedLessonDto } from './dto/create-reserved-lesson.dto';
 import { UpdateReservedLessonDto } from './dto/update-reserved-lesson.dto';
 import { FilterReservedLessonDto } from './dto/filter-reserved-lessons.dto';
+
+// const { OAuth2 } = google.auth;
+
+// let oAuth2Client = new OAuth2('106796500830865427301');
+
+// const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
+
+// //checking whether teacher is budy or not
+// let result = await calendar.events.list({
+//   calendarId: 'primary',
+//   timeMin: end1,
+//   timeMax: end2,
+//   maxResults: 1,
+//   singleEvents: true,
+//   orderBy: 'startTime',
+// });
 
 @Injectable()
 export class ReservedLessonsService {
@@ -14,18 +32,27 @@ export class ReservedLessonsService {
     private repository: Repository<ReservedLessonEntity>,
   ) {}
 
-  create(dto: CreateReservedLessonDto) {
+  async create(dto: CreateReservedLessonDto) {
     const lesson = this.repository.create({
       ...dto,
       tutor: { id: dto.tutor },
       student: { id: dto.student },
     });
 
-    const createMeetUrl = () => {
-      return 'https://meet.google.com/';
-    };
+    // Meeting({
+    //   clientId: '106796500830865427301.apps.googleusercontent.com',
+    //   clientSecret: 'diplom-tutor-app', // 'XXXXxxeh2mrCZ',
+    //   refreshToken: '', // 'XXXXXXXXXCNfW2MMGvJUSk4V7LplXAXXXX',
+    //   date: '2024-02-24',
+    //   time: '20:00',
+    //   summary: 'summary',
+    //   location: 'location',
+    //   description: 'description',
+    // }).then(function (result) {
+    //   console.log(result); // result is the final link
+    // });
 
-    return this.repository.save({ ...lesson, meetUrl: createMeetUrl() });
+    return this.repository.save({ ...lesson, meetUrl: 'createMeetUrl()' });
   }
 
   async findAll(dto: FilterReservedLessonDto) {

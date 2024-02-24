@@ -52,7 +52,13 @@ export class MessagesService {
     });
   }
 
-  removeMessage(id: number): Promise<number> {
-    return;
+  async removeMessage(id: number): Promise<number> {
+    const res = await this.repository.delete(id);
+
+    if (res.affected === 0) {
+      throw new NotFoundException('Повідомлення не знайдено');
+    }
+
+    return id;
   }
 }

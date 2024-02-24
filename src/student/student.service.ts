@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
 import { genSalt, hash } from 'bcryptjs';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { StudentEntity } from './entities/student.entity';
@@ -14,12 +14,18 @@ export class StudentService {
     private repository: Repository<StudentEntity>,
   ) {}
 
-  findById(id: number) {
-    return this.repository.findOneBy({ id });
+  async findById(id: number) {
+    const user = await this.repository.findOneBy({ id });
+    if (!user) new NotFoundException();
+    const { password, ...rest } = user;
+    return rest;
   }
 
-  findByEmail(email: string) {
-    return this.repository.findOneBy({ email });
+  async findByEmail(email: string) {
+    const user = await this.repository.findOneBy({ email });
+    if (!user) new NotFoundException();
+    const { password, ...rest } = user;
+    return rest;
   }
 
   async create(dto: AuthDto) {

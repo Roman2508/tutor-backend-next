@@ -1,26 +1,44 @@
-import { Injectable } from '@nestjs/common';
-import { CreateFileDto } from './dto/create-file.dto';
-import { UpdateFileDto } from './dto/update-file.dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
+
+import { FileEntity } from './entities/file.entity';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class FilesService {
-  create(createFileDto: CreateFileDto) {
-    return 'This action adds a new file';
+  constructor(
+    @InjectRepository(FileEntity)
+    private repository: Repository<FileEntity>,
+    private authService: AuthService,
+  ) {}
+
+  create(file: Express.Multer.File, headers: any, lessonId: number) {
+    const token = headers.authorization.replace('Bearer ', '');
+    const userData = this.authService.decodeToken(token);
+
+    return this.repository.save({
+      filename: file.filename,
+      originalName: file.originalname,
+      size: file.size,
+      mimetype: file.mimetype,
+      lesson: { id: lessonId },
+      user: { id: userData.id },
+      authorRole: userData.userRole,
+    });
   }
 
-  findAll() {
-    return `This action returns all files`;
+  findAll(lessonId: number) {
+    return this.repository.findOneBy({ lesson: { id: lessonId } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} file`;
-  }
+  async remove(id: number) {
+    const res = await this.repository.delete(id);
 
-  update(id: number, updateFileDto: UpdateFileDto) {
-    return `This action updates a #${id} file`;
-  }
+    if (res.affected === 0) {
+      throw new NotFoundException('Файл не знайдено');
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} file`;
+    return id;
   }
 }

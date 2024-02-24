@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDialogDto } from './dto/create-dialog.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DialogEntity } from './entities/dialog.entity';
@@ -20,15 +20,27 @@ export class DialogsService {
     return this.repository.save(dialog);
   }
 
-  findAll() {
-    return `This action returns all dialogs`;
+  findAll(userRole: 'tutor' | 'student', id: number) {
+    return this.repository.find({
+      where: { [userRole]: { id } },
+      relations: {
+        tutor: true,
+        student: true,
+      },
+      select: {
+        tutor: { id: true, name: true },
+        student: { id: true, name: true },
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} dialog`;
-  }
+  async remove(id: number) {
+    const res = await this.repository.delete(id);
 
-  remove(id: number) {
-    return `This action removes a #${id} dialog`;
+    if (res.affected === 0) {
+      throw new NotFoundException('Діалог не знайдено');
+    }
+
+    return id;
   }
 }

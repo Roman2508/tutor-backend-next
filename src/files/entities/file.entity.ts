@@ -1,13 +1,12 @@
-import { ReservedLessonEntity } from 'src/reserved-lessons/entities/reserved-lesson.entity';
-
 import {
   Column,
   Entity,
   ManyToOne,
   CreateDateColumn,
-  UpdateDateColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
+import { ReservedLessonEntity } from 'src/reserved-lessons/entities/reserved-lesson.entity';
 
 @Entity('files')
 export class FileEntity {
@@ -21,7 +20,7 @@ export class FileEntity {
   originalName: string;
 
   @Column()
-  size: string;
+  size: number;
 
   @Column()
   mimetype: string;
@@ -32,9 +31,9 @@ export class FileEntity {
   @Column()
   authorRole: 'tutor' | 'student';
 
-  @CreateDateColumn()
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
   createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

@@ -6,13 +6,18 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Query,
 } from '@nestjs/common';
 import { DialogsService } from './dialogs.service';
 import { CreateDialogDto } from './dto/create-dialog.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @ApiTags('dialogs')
 @Controller('dialogs')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class DialogsController {
   constructor(private readonly dialogsService: DialogsService) {}
 
@@ -22,13 +27,8 @@ export class DialogsController {
   }
 
   @Get()
-  findAll() {
-    return this.dialogsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.dialogsService.findOne(+id);
+  findAll(@Query('userRole') userRole: 'tutor' | 'student', @Query('id') id: string) {
+    return this.dialogsService.findAll(userRole, +id);
   }
 
   @Delete(':id')

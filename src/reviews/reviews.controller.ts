@@ -1,18 +1,22 @@
 import {
-  Controller,
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  UseGuards,
+  Controller,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+
 import { ReviewsService } from './reviews.service';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { CreateReviewDto } from './dto/create-review.dto';
-import { ApiTags } from '@nestjs/swagger';
 
 @Controller('reviews')
 @ApiTags('reviews')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 

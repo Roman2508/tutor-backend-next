@@ -3,12 +3,13 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { TutorsService } from 'src/tutors/tutors.service';
 import { compare } from 'bcryptjs';
-import { StudentService } from 'src/student/student.service';
-import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+
 import { AuthDto } from './dto/auth.dto';
+import { LoginDto } from './dto/login.dto';
+import { TutorsService } from 'src/tutors/tutors.service';
+import { StudentService } from 'src/student/student.service';
 
 @Injectable()
 export class AuthService {
@@ -90,20 +91,23 @@ export class AuthService {
     };
   }
 
-  async getMe(token: string) {
+  decodeToken(token: string): { id: number; userRole: 'tutor' | 'student' } {
     const { id, userRole } = this.jwtService.decode(token);
+
+    return { id, userRole };
+  }
+
+  async getMe(token: string) {
+    const { id, userRole } = this.decodeToken(token);
 
     if (id && userRole === 'tutor') {
       const userData = await this.tutorService.findById(id);
-      const { password, ...user } = userData;
-      return user;
+      return userData;
     }
 
     if (id && userRole === 'student') {
       const userData = await this.studentService.findById(id);
-      const { password, ...user } = userData;
-
-      return user;
+      return userData;
     }
 
     return null;

@@ -28,7 +28,9 @@ export class MessageEntity {
   @Column()
   userRole: 'tutor' | 'student';
 
-  @ManyToOne(() => DialogEntity, (dialog) => dialog.messages)
+  @ManyToOne(() => DialogEntity, (dialog) => dialog.messages, {
+    onDelete: 'CASCADE',
+  })
   dialog: DialogEntity;
 
   @CreateDateColumn({
