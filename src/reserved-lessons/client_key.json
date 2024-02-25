@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "diplom-tutor-app",
+  "private_key_id": "b34a3cd56e24b6cf91400e19ba4db7a1a6b548da",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDyWXc5ALDEwjgV\nzDbMqKeA+bNRRu01+eMKgvC4fvr5z+acr21nk6zwAetF9a6Nw/cXJg6+oE3qbwkF\n+WfWooV0nnaFsUWtvAnTnZr/SZQw/LrIcHvTMeirU9cOb1ClHYiNfFvYZbida++j\nhgizB9UUbc3Qnb23Qb3VOciDHKQGf5Fz6kbpVPJBeIvEu1uPXE4XvNmYpozs1t5u\n9AX+vbBiNEW3X3rnJMcXRBEnqcXAxx8R65kvcdhavRGdNbzoG8nRFhof0922TfqG\nibi/Nybb9NdUjEpTkErnml/9rrHsyl+zAjJZLXHs3M1o0pe/kio6IbtJozonH6u5\nR2YmuA3pAgMBAAECggEABWDDit9KDO5mbOK9lehpjIIotDVdDuU/CuesTIZ82U2q\nHMYD09hCGTK3CYlnLebbCod3V6GaY7PCa9XaCQ2i5TCdtAp4Cl/xiTb7zo3Px7qE\nBpirFse1FcA5iyzLNFl7GJtZimwkyabbMtzG6qTSL1mJx1xeGRKmEh+Yedheh3UC\n3jbmEQovapxpkaxq9zxjkF6i1SBAsUDD0y8RU9kIuLm8MheOWVGF7mRLaJefiffR\n+YPNbDCLCMz3JIjpD93GEJpkspN8iCHVNs9w25pCT7U7D2hUW4ucBr2wQ+nuDz9t\ndgtxcWOMK4087+yDs+YHv3afAS3U8snPimZM1OXUEQKBgQD6T1D7PK4ghXPE0ZQn\nZosMeRRZp3LU6k78K58v8DgWZRWTp/vQW1pnoRfv5hh4F1kmJgIlzAgDcXgt6w/g\n1L4dg3A9ocAlyuKw2Aveoo/SWiNgP0bYsDdJ+38uJEdZYizczxwdb0ovcaRzgvM7\nJnNzTtzVWseIyf6MloAOt7oM/QKBgQD329Lsg5fk5gBnS0kfcwmtru9JAWGigSFO\nSwloO0k96TUQjsIdRzjBdtY0spILBSJoo4vB5a2t8vNXQbeA/gl8ebDl4so88d4r\n7/moDefUTrvp21lRRXkdnIi9gfF41xnHKepHdmqkc5REkgE5cAkgJ3awkuJb/+DQ\neVpIQrGOXQKBgDydBGEyWoApkNUyYwv/euB0WYc0U0xXyPSro4q6Qvq5U7ZD0Wit\nFoFNszw2nepGzSG9xntcovwieBW2fEvXeIoxD/b8ukjsjmSAjK9G8kjf5v0hlYhX\nc6wIqM2Fn3l3mqGFzasbDf3bKRWHulqyfvaHPFa1+ueW8nsc3rmxp+4JAoGBALQS\nG5pDPI5K304sLxLPI9/wMN4MR9+lCwpzj4EPWXXGQQwnezWEMeK0MImWlm21LDtz\nXizfbZ/r2wiwsN3hMgkh6/gIHT/LxMqNDQcgGyZukS0kdC6MV6LAv8NWbZWKSKse\nc5u5l16krbpnjMYq9CZNJXjBLf0C2FT9ZS8MbSztAoGBAOOCKFo13Ys5GFbewtTn\nhEwgk/cSi7atzJAsw5yEDgvXDC0M3fMK0tvZ1Qbn/rdXYiWSgS8vjOuAuXMVNwUL\n5T7ndMAOrm//AsfdIucprospr0xrR6X4rz4NFBuxnkQ3s6i6OWy3+aVnwOO9DJ4m\nO2+yRpWXhXsafwxkjlVe000C\n-----END PRIVATE KEY-----\n",
+  "client_email": "tutor-app@diplom-tutor-app.iam.gserviceaccount.com",
+  "client_id": "106796500830865427301",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/tutor-app%40diplom-tutor-app.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
