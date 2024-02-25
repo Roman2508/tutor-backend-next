@@ -19,7 +19,7 @@ const CREDENTIALS_PATH = path.join(
   'src/reserved-lessons/client_secret.json',
 );
 const SCOPES = [
-  'https://www.googleapis.com/auth/calendar.readonly',
+  'https://www.googleapis.com/auth/calendar',
   'https://www.googleapis.com/auth/meetings.space.created',
 ];
 
@@ -112,35 +112,21 @@ export class ReservedLessonsService {
       },
     };
 
-    // const result = await calendar.events.insert(
-    //   {
-    //     auth: auth,
-    //     calendarId: 'primary',
-    //     // @ts-ignore
-    //     resource: event,
-    //   },
-    //   function (err, event) {
-    //     if (err) {
-    //       console.log(
-    //         'There was an error contacting the Calendar service: ' + err,
-    //       );
-    //       return;
-    //     }
-    //     console.log('Event created: %s', event);
-    //   },
-    // );
-
     // Отримання посилання на Google Meet
     // @ts-ignore
     // const meetLink = result?.data.conferenceData.conferenceSolution.uri;
 
     // console.log(meetLink);
 
-    const a = await calendar.events.insert({
+    const responce = await calendar.events.insert({
       auth: auth,
       calendarId: 'primary',
-      // conferenceDataVersion: 1,
+
+      conferenceDataVersion: 1,
       requestBody: {
+        start: { dateTime: '2024-02-26T10:00:00', timeZone: 'Europe/Kyiv' },
+        end: { dateTime: '2024-02-26T11:00:00', timeZone: 'Europe/Kyiv' },
+
         conferenceData: {
           // summary: '1',
           // description: '3',
@@ -152,7 +138,9 @@ export class ReservedLessonsService {
           // end: {
           //   datetime: new Date(),
           // },
-          // conferenceId: 'hangoutsMeet',
+
+          conferenceId: 'hangoutsMeet',
+          // entryPoints: {},
 
           createRequest: {
             conferenceSolutionKey: {
@@ -163,21 +151,12 @@ export class ReservedLessonsService {
       },
     });
 
-    console.log(a);
-
-    // Meeting({
-    //   clientId:
-    //     '568916016031-1uff602tt5u2ppbmqunonbb8n1i0lkfg.apps.googleusercontent.com',
-    //   clientSecret: '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', // 'XXXXxxeh2mrCZ',
-    //   refreshToken: '', // 'XXXXXXXXXCNfW2MMGvJUSk4V7LplXAXXXX',
-    //   date: '2024-02-24',
-    //   time: '20:00',
-    //   summary: 'summary',
-    //   location: 'location',
-    //   description: 'description',
-    // }).then(function (result) {
-    //   console.log(result); // result is the final link
-    // });
+    // Отримання ідентифікатора конференції Google Meet
+    // const meetLink = responce.data.conferenceData.entryPoints[0].uri;
+    // console.log('Conference URL:', meetLink);
+    // console.log(responce.data.conferenceData);
+    // @ts-ignore
+    console.log(responce.config.data.conferenceData);
 
     return true;
 
