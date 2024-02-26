@@ -6,6 +6,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Patch,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
@@ -25,7 +26,7 @@ export class MessagesController {
     return this.messagesService.createMessage(dto);
   }
 
-  @Post(':id')
+  @Patch(':id')
   updateIsReading(@Param() id: string) {
     return this.messagesService.updateIsReading(+id);
   }

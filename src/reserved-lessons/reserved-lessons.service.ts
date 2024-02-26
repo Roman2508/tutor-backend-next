@@ -1,4 +1,3 @@
-// import fs from 'fs/promises';
 const path = require('path');
 const fs = require('fs').promises;
 import { google } from 'googleapis';
@@ -7,7 +6,6 @@ import { authenticate } from '@google-cloud/local-auth';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { FindOptionsWhereProperty, ILike, Repository } from 'typeorm';
 
-import Meeting from './google-meet-api';
 import { ReservedLessonEntity } from './entities/reserved-lesson.entity';
 import { CreateReservedLessonDto } from './dto/create-reserved-lesson.dto';
 import { UpdateReservedLessonDto } from './dto/update-reserved-lesson.dto';
@@ -20,6 +18,7 @@ const CREDENTIALS_PATH = path.join(
 );
 const SCOPES = [
   'https://www.googleapis.com/auth/calendar',
+  'https://www.googleapis.com/auth/meetings',
   'https://www.googleapis.com/auth/meetings.space.created',
 ];
 
@@ -74,93 +73,76 @@ export class ReservedLessonsService {
   }
 
   async create(dto: CreateReservedLessonDto) {
-    //   const lesson = this.repository.create({
-    //     ...dto,
-    //     tutor: { id: dto.tutor },
-    //     student: { id: dto.student },
-    //   });
-    const auth = await this.authorize();
-
-    const calendar = google.calendar({ version: 'v3', auth });
-
-    const event = {
-      summary: 'Google I/O 2024',
-      location: '800 Howard St., San Francisco, CA 94103',
-      description: "A chance to hear more about Google's developer products.",
-      start: {
-        dateTime: '2024-02-25T09:00:00-07:00',
-        timeZone: 'America/Los_Angeles',
-      },
-      conferenceData: {
-        createWithGoogleMeet: true,
-      },
-      end: {
-        dateTime: '2024-02-25T17:00:00-08:00',
-        timeZone: 'America/Los_Angeles',
-      },
-      recurrence: ['RRULE:FREQ=DAILY;COUNT=2'],
-      attendees: [
-        { email: 'roma.250899@gmail.com' },
-        // { email: 'sbrin@example.com' },
-      ],
-      reminders: {
-        useDefault: false,
-        overrides: [
-          { method: 'email', minutes: 24 * 60 },
-          { method: 'popup', minutes: 10 },
-        ],
-      },
-    };
-
-    // Отримання посилання на Google Meet
-    // @ts-ignore
-    // const meetLink = result?.data.conferenceData.conferenceSolution.uri;
-
-    // console.log(meetLink);
-
-    const responce = await calendar.events.insert({
-      auth: auth,
-      calendarId: 'primary',
-
-      conferenceDataVersion: 1,
-      requestBody: {
-        start: { dateTime: '2024-02-26T10:00:00', timeZone: 'Europe/Kyiv' },
-        end: { dateTime: '2024-02-26T11:00:00', timeZone: 'Europe/Kyiv' },
-
-        conferenceData: {
-          // summary: '1',
-          // description: '3',
-          // location: 'America/Los_Angeles',
-          // colorId: '7',
-          // start: {
-          //   datetime: new Date(),
-          // },
-          // end: {
-          //   datetime: new Date(),
-          // },
-
-          conferenceId: 'hangoutsMeet',
-          // entryPoints: {},
-
-          createRequest: {
-            conferenceSolutionKey: {
-              type: 'hangoutsMeet',
-            },
-          },
-        },
-      },
+    const lesson = this.repository.create({
+      ...dto,
+      tutor: { id: dto.tutor },
+      student: { id: dto.student },
+      meetUrl: '',
     });
+
+    return this.repository.save(lesson);
+
+    // const auth = await this.authorize();
+
+    // const calendar = google.calendar({ version: 'v3', auth });
+
+    // const event = {
+    //   summary: 'Google I/O 2024',
+    //   location: '800 Howard St., San Francisco, CA 94103',
+    //   description: "A chance to hear more about Google's developer products.",
+    //   start: {
+    //     dateTime: '2024-02-25T09:00:00-07:00',
+    //     timeZone: 'America/Los_Angeles',
+    //   },
+    //   conferenceData: {
+    //     createWithGoogleMeet: true,
+    //   },
+    //   end: {
+    //     dateTime: '2024-02-25T17:00:00-08:00',
+    //     timeZone: 'America/Los_Angeles',
+    //   },
+    //   recurrence: ['RRULE:FREQ=DAILY;COUNT=2'],
+    //   attendees: [
+    //     { email: 'roma.250899@gmail.com' },
+    //     // { email: 'sbrin@example.com' },
+    //   ],
+    //   reminders: {
+    //     useDefault: false,
+    //     overrides: [
+    //       { method: 'email', minutes: 24 * 60 },
+    //       { method: 'popup', minutes: 10 },
+    //     ],
+    //   },
+    // };
+
+    // const responce = await calendar.events.insert({
+    //   auth: auth,
+    //   calendarId: 'primary',
+
+    //   conferenceDataVersion: 1,
+    //   requestBody: {
+    //     start: { dateTime: '2024-02-26T10:00:00', timeZone: 'Europe/Kyiv' },
+    //     end: { dateTime: '2024-02-26T11:00:00', timeZone: 'Europe/Kyiv' },
+
+    //     conferenceData: {
+    //       conferenceId: 'hangoutsMeet',
+    //       createRequest: {
+    //         conferenceSolutionKey: {
+    //           type: 'hangoutsMeet',
+    //         },
+    //       },
+    //     },
+    //   },
+    // });
 
     // Отримання ідентифікатора конференції Google Meet
     // const meetLink = responce.data.conferenceData.entryPoints[0].uri;
     // console.log('Conference URL:', meetLink);
     // console.log(responce.data.conferenceData);
     // @ts-ignore
-    console.log(responce.config.data.conferenceData);
+    // console.log(responce.config.data.conferenceData);
 
-    return true;
-
-    // return this.repository.save({ ...lesson, meetUrl: 'createMeetUrl()' });
+    // return true;
   }
 
   async findAll(dto: FilterReservedLessonDto) {

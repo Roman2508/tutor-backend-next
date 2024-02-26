@@ -38,6 +38,10 @@ export class AuthService {
       user = await this.studentService.findByEmail(dto.email);
     }
 
+    if (!user || !user.password) {
+      throw new UnauthorizedException('Логін або пароль не вірний');
+    }
+
     const isPasswordsTheSame = await compare(dto.password, user?.password);
 
     if (!isPasswordsTheSame) {

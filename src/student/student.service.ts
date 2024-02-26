@@ -17,15 +17,13 @@ export class StudentService {
   async findById(id: number) {
     const user = await this.repository.findOneBy({ id });
     if (!user) new NotFoundException();
-    const { password, ...rest } = user;
-    return rest;
+    return user;
   }
 
   async findByEmail(email: string) {
     const user = await this.repository.findOneBy({ email });
     if (!user) new NotFoundException();
-    const { password, ...rest } = user;
-    return rest;
+    return user;
   }
 
   async create(dto: AuthDto) {

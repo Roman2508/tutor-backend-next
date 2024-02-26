@@ -21,8 +21,10 @@ export class DialogsService {
   }
 
   findAll(userRole: 'tutor' | 'student', id: number) {
+    let fieldName = userRole === 'tutor' ? 'isTutorDelete' : 'isStudentDelete';
+
     return this.repository.find({
-      where: { [userRole]: { id } },
+      where: { [userRole]: { id }, [fieldName]: false },
       relations: {
         tutor: true,
         student: true,
@@ -34,11 +36,25 @@ export class DialogsService {
     });
   }
 
-  async remove(id: number) {
-    const res = await this.repository.delete(id);
+  async remove(id: number, userRole: 'tutor' | 'student') {
+    const dialog = await this.repository.findOne({ where: { id } });
 
-    if (res.affected === 0) {
-      throw new NotFoundException('Діалог не знайдено');
+    if (!dialog) throw new NotFoundException('Діалог не знайдено');
+
+    let fieldName = userRole === 'tutor' ? 'isTutorDelete' : 'isStudentDelete';
+
+    const updatedDialog = await this.repository.save({
+      ...dialog,
+      [fieldName]: true,
+    });
+
+    // Якщо і студент і викладач видалили свій діалог - видаляю його з БД
+    if (updatedDialog.isStudentDelete && updatedDialog.isTutorDelete) {
+      const res = await this.repository.delete(id);
+
+      if (res.affected === 0) {
+        throw new NotFoundException('Діалог не знайдено');
+      }
     }
 
     return id;

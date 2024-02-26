@@ -26,13 +26,19 @@ export class DialogsController {
     return this.dialogsService.create(dto);
   }
 
-  @Get()
-  findAll(@Query('userRole') userRole: 'tutor' | 'student', @Query('id') id: string) {
+  @Get(':id/:userRole')
+  findAll(
+    @Param('id') id: string,
+    @Param('userRole') userRole: 'tutor' | 'student',
+  ) {
     return this.dialogsService.findAll(userRole, +id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.dialogsService.remove(+id);
+  @Delete(':id/:userRole')
+  remove(
+    @Param('id') id: string,
+    @Param('userRole') userRole: 'tutor' | 'student',
+  ) {
+    return this.dialogsService.remove(+id, userRole);
   }
 }

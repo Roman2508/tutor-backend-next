@@ -14,5 +14,8 @@ export class UpdateReservedLessonDto {
   duration: number;
 
   @ApiProperty()
+  meetUrl: string;
+
+  @ApiProperty()
   startAt: Date;
 }

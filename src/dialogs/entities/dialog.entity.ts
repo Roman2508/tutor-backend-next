@@ -2,6 +2,7 @@ import { MessageEntity } from 'src/messages/entities/message.entity';
 import { StudentEntity } from 'src/student/entities/student.entity';
 import { TutorEntity } from 'src/tutors/entities/tutor.entity';
 import {
+  Column,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -25,4 +26,10 @@ export class DialogEntity {
   @OneToMany(() => MessageEntity, (message) => message.dialog)
   @JoinColumn({ name: 'messages' })
   messages: MessageEntity[];
+
+  @Column({ default: false })
+  isTutorDelete: boolean;
+
+  @Column({ default: false })
+  isStudentDelete: boolean;
 }

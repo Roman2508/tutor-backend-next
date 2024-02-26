@@ -1,18 +1,19 @@
 import {
-  Controller,
   Get,
   Post,
   Body,
   UsePipes,
-  ValidationPipe,
   HttpCode,
   UseGuards,
+  Controller,
+  ValidationPipe,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
-import { AuthDto } from './dto/auth.dto';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
+
+import { AuthDto } from './dto/auth.dto';
+import { LoginDto } from './dto/login.dto';
 import { GetMeDto } from './dto/get-me.dto';
+import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local.guard';
 
 @Controller('auth')
