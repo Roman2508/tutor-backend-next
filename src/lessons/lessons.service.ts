@@ -42,12 +42,14 @@ export class LessonsService {
     const [entities, count] = await this.repository.findAndCount({
       where: { ...options },
       order: { [sortDirection[0]]: sortDirection[1].toUpperCase() },
-      relations: { tutor: { lessons: true } },
+      relations: { tutor: { lessons: true, reviews: true } },
       select: {
         tutor: {
           id: true,
           name: true,
-          reviews: true,
+          reviews: {
+            id: true,
+          },
           rating: true,
           avatarUrl: true,
           description: true,
