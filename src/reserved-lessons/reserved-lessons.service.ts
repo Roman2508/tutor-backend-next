@@ -166,8 +166,8 @@ export class ReservedLessonsService {
       },
       relations: { tutor: true, student: true },
       select: {
-        tutor: { id: true, name: true },
-        student: { id: true, name: true },
+        tutor: { id: true, name: true, avatarUrl: true },
+        student: { id: true, name: true, avatarUrl: true },
       },
       order: { [sortDirection[0]]: sortDirection[1].toUpperCase() },
       skip: skip,
