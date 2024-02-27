@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { AuthDto } from 'src/auth/dto/auth.dto';
 import { TutorEntity } from './entities/tutor.entity';
+import { UpdateTutorDto } from './dto/update-tutor.dto';
 
 @Injectable()
 export class TutorsService {
@@ -31,7 +32,51 @@ export class TutorsService {
   }
 
   async findById(id: number) {
-    const user = await this.repository.findOneBy({ id });
+    const user = await this.repository.findOne({
+      where: { id },
+      relations: {
+        lessons: { tutor: true },
+        reviews: { sender: true },
+        reservedLessons: true,
+        dialogs: { student: true },
+      },
+      select: {
+        lessons: {
+          id: true,
+          name: true,
+          price: true,
+          duration: true,
+          tutor: {
+            id: true,
+            name: true,
+          },
+        },
+        reviews: {
+          id: true,
+          message: true,
+          rating: true,
+          sender: {
+            id: true,
+            name: true,
+            avatarUrl: true,
+          },
+          createdAt: true,
+        },
+        reservedLessons: {
+          id: true,
+          name: true,
+          duration: true,
+          startAt: true,
+        },
+        dialogs: {
+          id: true,
+          student: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
     if (!user) new NotFoundException();
     return user;
   }
@@ -42,7 +87,16 @@ export class TutorsService {
     return user;
   }
 
-  // update(id: number, updateTutorDto: UpdateTutorDto) {
-  //   return `This action updates a #${id} tutor`;
-  // }
+  async update(id: number, dto: UpdateTutorDto) {
+    const tutor = await this.findById(id);
+
+    if (dto.password) {
+      const salt = await genSalt(10);
+      const passwordHash = await hash(dto.password, salt);
+
+      return this.repository.save({ ...tutor, ...dto, password: passwordHash });
+    } else {
+      return this.repository.save({ ...tutor, ...dto });
+    }
+  }
 }

@@ -12,4 +12,7 @@ export class CreateLessonDto {
 
   @ApiProperty()
   duration: number;
+
+  @ApiProperty()
+  theme?: number;
 }

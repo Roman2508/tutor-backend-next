@@ -1,10 +1,11 @@
-import { Get, Post, Body, Param, UseGuards, Controller } from '@nestjs/common';
+import { Get, Post, Body, Param, UseGuards, Controller, Patch } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { AuthDto } from 'src/auth/dto/auth.dto';
 import { StudentService } from './student.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserId } from 'src/decorators/user-id.decorator';
+import { UpdateStudentDto } from './dto/update-student.dto';
 
 @Controller('student')
 @ApiTags('student')
@@ -33,4 +34,8 @@ export class StudentController {
     return this.studentService.create(dto);
   }
 
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() dto: UpdateStudentDto) {
+    return this.studentService.update(+id, dto);
+  }
 }

@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { StudentEntity } from './entities/student.entity';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { AuthDto } from 'src/auth/dto/auth.dto';
+import { UpdateStudentDto } from './dto/update-student.dto';
 
 @Injectable()
 export class StudentService {
@@ -41,5 +42,22 @@ export class StudentService {
     const { password: pass, ...result } = user;
 
     return result;
+  }
+
+  async update(id: number, dto: UpdateStudentDto) {
+    const student = await this.findById(id);
+
+    if (dto.password) {
+      const salt = await genSalt(10);
+      const passwordHash = await hash(dto.password, salt);
+
+      return this.repository.save({
+        ...student,
+        ...dto,
+        password: passwordHash,
+      });
+    } else {
+      return this.repository.save({ ...student, ...dto });
+    }
   }
 }

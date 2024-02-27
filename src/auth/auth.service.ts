@@ -106,12 +106,14 @@ export class AuthService {
 
     if (id && userRole === 'tutor') {
       const userData = await this.tutorService.findById(id);
-      return userData;
+      const { password, ...rest } = userData;
+      return rest;
     }
 
     if (id && userRole === 'student') {
       const userData = await this.studentService.findById(id);
-      return userData;
+      const { password, ...rest } = userData;
+      return rest;
     }
 
     return null;
