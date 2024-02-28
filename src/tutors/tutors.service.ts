@@ -59,6 +59,7 @@ export class TutorsService {
             id: true,
             name: true,
             avatarUrl: true,
+            userRole: true,
           },
           createdAt: true,
         },

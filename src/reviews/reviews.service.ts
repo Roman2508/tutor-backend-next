@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReviewsEntity } from './entities/review.entity';
@@ -11,11 +15,36 @@ export class ReviewsService {
     @InjectRepository(ReviewsEntity)
     private repository: Repository<ReviewsEntity>,
 
-    @InjectRepository(ReviewsEntity)
+    @InjectRepository(TutorEntity)
     private tutorRepository: Repository<TutorEntity>,
   ) {}
 
+  async calculateTutorRating(recepientId: number) {
+    const allReviews = await this.repository.find({
+      where: { recipient: { id: recepientId } },
+    });
+
+    if (allReviews.length) {
+      const totalRating = allReviews.reduce(
+        (acc, curr) => acc + curr.rating,
+        0,
+      );
+
+      const averageRating = Math.round(totalRating / allReviews.length);
+
+      const tutor = await this.tutorRepository.findOne({
+        where: { id: recepientId },
+      });
+
+      this.tutorRepository.save({ id: tutor.id, rating: averageRating });
+    }
+  }
+
   async create(dto: CreateReviewDto) {
+    if (!dto.message || !dto.rating || !dto.recipient || !dto.sender) {
+      throw new BadRequestException('Вибрані не всі дані');
+    }
+
     const reviews = this.repository.create({
       message: dto.message,
       rating: dto.rating,
@@ -23,23 +52,11 @@ export class ReviewsService {
       recipient: { id: dto.recipient },
     });
 
-    const tutor = await this.tutorRepository.findOne({
-      where: { id: dto.recipient },
-      relations: { reviews: true },
-      select: { reviews: { rating: true } },
-    });
+    const newReviews = await this.repository.save(reviews);
 
-    if (tutor) {
-      const totalRating = tutor.reviews.reduce(
-        (acc, curr) => acc + curr.rating,
-        0,
-      );
-      const averageRating = Math.round(totalRating / tutor.reviews.length);
+    await this.calculateTutorRating(dto.recipient);
 
-      this.tutorRepository.save({ ...tutor, rating: averageRating });
-    }
-
-    return this.repository.save(reviews);
+    return newReviews;
   }
 
   findAll(id: number) {
@@ -50,11 +67,18 @@ export class ReviewsService {
   }
 
   async remove(id: number) {
-    const res = await this.repository.delete(id);
+    const review = await this.repository.findOne({
+      where: { id },
+      relations: { recipient: true },
+    });
 
-    if (res.affected === 0) {
+    if (!review) {
       throw new NotFoundException('Відгук не знайдено');
     }
+
+    await this.calculateTutorRating(review.recipient.id);
+
+    await this.repository.delete(id);
 
     return id;
   }

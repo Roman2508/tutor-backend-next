@@ -5,6 +5,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -14,10 +15,18 @@ export class ReviewsEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => StudentEntity, (student) => student.reviews)
+  @ManyToOne(() => StudentEntity, (student) => student.reviews, {
+    onDelete: 'CASCADE',
+    nullable: false,
+  })
+  @JoinColumn({ name: 'sender' })
   sender: StudentEntity;
 
-  @ManyToOne(() => TutorEntity, (tutor) => tutor.reviews)
+  @ManyToOne(() => TutorEntity, (tutor) => tutor.reviews, {
+    onDelete: 'CASCADE',
+    nullable: false,
+  })
+  @JoinColumn({ name: 'recipient' })
   recipient: TutorEntity;
 
   @Column()
