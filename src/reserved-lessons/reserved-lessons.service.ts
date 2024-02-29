@@ -184,7 +184,7 @@ export class ReservedLessonsService {
 
   // get full lesson
   findOne(id: number) {
-    return this.repository.find({
+    return this.repository.findOne({
       where: { id },
       relations: { tutor: true, student: true, files: true },
       select: {
