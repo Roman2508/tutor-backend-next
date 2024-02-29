@@ -1,3 +1,4 @@
+const fs = require('fs');
 import {
   Controller,
   Get,
@@ -12,6 +13,10 @@ import {
   UploadedFile,
   UseInterceptors,
   Headers,
+  Res,
+  StreamableFile,
+  BadRequestException,
+  Header,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -55,13 +60,20 @@ export class FilesController {
     return this.filesService.create(file, headers, +lessonId);
   }
 
+  @Get('/download/:filename')
+  @Header('Content-Type', 'multipart/form-data')
+  getFile(@Param('filename') filename: string): StreamableFile {
+    const file = fs.createReadStream(`uploads/${filename}`);
+    return new StreamableFile(file);
+  }
+
   @Get(':lessonId')
   findAll(@Param('lessonId') lessonId: string) {
     return this.filesService.findAll(+lessonId);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.filesService.remove(+id);
+  @Delete(':filename/:id')
+  remove(@Param('filename') filename: string, @Param('id') id: string) {
+    return this.filesService.remove(filename, +id);
   }
 }

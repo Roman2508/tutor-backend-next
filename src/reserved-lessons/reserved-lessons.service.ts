@@ -194,6 +194,7 @@ export class ReservedLessonsService {
           id: true,
           originalName: true,
           authorRole: true,
+          createdAt: true,
           filename: true,
           mimetype: true,
           size: true,

@@ -1,3 +1,4 @@
+const fs = require('fs');
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
@@ -13,11 +14,11 @@ export class FilesService {
     private authService: AuthService,
   ) {}
 
-  create(file: Express.Multer.File, headers: any, lessonId: number) {
+  async create(file: Express.Multer.File, headers: any, lessonId: number) {
     const token = headers.authorization.replace('Bearer ', '');
     const userData = this.authService.decodeToken(token);
 
-    return this.repository.save({
+    const item = await this.repository.save({
       filename: file.filename,
       originalName: file.originalname,
       size: file.size,
@@ -26,19 +27,34 @@ export class FilesService {
       user: { id: userData.id },
       authorRole: userData.userRole,
     });
+
+    return this.repository.findOne({
+      where: { id: item.id },
+      select: {
+        id: true,
+        originalName: true,
+        authorRole: true,
+        createdAt: true,
+        filename: true,
+        mimetype: true,
+        size: true,
+      },
+    });
   }
 
   findAll(lessonId: number) {
     return this.repository.findOneBy({ lesson: { id: lessonId } });
   }
 
-  async remove(id: number) {
+  async remove(filename: string, id: number) {
     const res = await this.repository.delete(id);
 
     if (res.affected === 0) {
       throw new NotFoundException('Файл не знайдено');
     }
 
-    return id;
+    await fs.promises.unlink(`uploads/${filename}`);
+
+    return { id, filename };
   }
 }
