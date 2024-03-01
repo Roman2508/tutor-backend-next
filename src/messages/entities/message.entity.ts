@@ -6,6 +6,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -22,8 +23,17 @@ export class MessageEntity {
   @Column({ default: false })
   isReaded: boolean;
 
-  @ManyToOne(() => TutorEntity || StudentEntity)
-  sender: TutorEntity | StudentEntity;
+  // @ManyToOne(() => StudentEntity || TutorEntity)
+  // @JoinColumn({ name: 'sender' })
+  // sender: StudentEntity | TutorEntity;
+
+  @ManyToOne(() => TutorEntity)
+  @JoinColumn({ name: 'senderTutor' })
+  senderTutor: TutorEntity;
+
+  @ManyToOne(() => StudentEntity)
+  @JoinColumn({ name: 'senderStudent' })
+  senderStudent: StudentEntity;
 
   @Column()
   userRole: 'tutor' | 'student';

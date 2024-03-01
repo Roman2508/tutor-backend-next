@@ -19,19 +19,7 @@ export class DialogsGateway {
 
   @SubscribeMessage('sendMessage')
   async handleSendMessage(client: Socket, payload: any): Promise<void> {
-    await this.messagesService.createMessage(payload);
-    this.server.emit('recMessage', payload);
+    const message = await this.messagesService.createMessage(payload);
+    this.server.emit('recMessage', message);
   }
-
-  //   afterInit(server: Server) {
-  //     console.log(server);
-  //   }
-
-  //   handleDisconnect(client: Socket) {
-  //     console.log(`Disconnected: ${client.id}`);
-  //   }
-
-  //   handleConnection(client: Socket, ...args: any[]) {
-  //     console.log(`Connected ${client.id}`);
-  //   }
 }

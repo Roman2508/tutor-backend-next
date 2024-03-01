@@ -5,7 +5,10 @@ export class CreateMessageDto {
   text: string;
 
   @ApiProperty()
-  sender: number;
+  sender: {
+    id: number;
+    name: string;
+  };
 
   @ApiProperty()
   dialog: number;

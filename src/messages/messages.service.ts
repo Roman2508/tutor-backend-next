@@ -12,41 +12,50 @@ export class MessagesService {
     private repository: Repository<MessageEntity>,
   ) {}
   async createMessage(dto: CreateMessageDto): Promise<MessageEntity> {
-    const messsage = this.repository.create({
-      sender: { id: dto.sender },
+    // senderTutor || senderStudent
+    const fieldName =
+      'sender' + dto.userRole.charAt(0).toUpperCase() + dto.userRole.slice(1);
+
+    const message = this.repository.create({
+      [fieldName]: { id: dto.sender.id },
       dialog: { id: dto.dialog },
       userRole: dto.userRole,
       text: dto.text,
     });
 
-    await this.repository.save(messsage);
+    await this.repository.save(message);
 
     return this.repository.findOne({
-      where: { id: messsage.id },
-      relations: { sender: true, dialog: true },
+      where: { id: message.id },
+      relations: { senderTutor: true, senderStudent: true, dialog: true },
       select: {
-        sender: { id: true, name: true },
+        senderTutor: { id: true, name: true, avatarUrl: true },
+        senderStudent: { id: true, name: true, avatarUrl: true },
         dialog: { id: true },
       },
     });
   }
 
   async updateIsReading(id: number): Promise<MessageEntity> {
-    const messsage = await this.repository.findOne({ where: { id } });
+    const message = await this.repository.findOne({ where: { id } });
 
-    if (!messsage) new NotFoundException('Повідомлення не знайдено');
+    if (!message) new NotFoundException('Повідомлення не знайдено');
 
-    return this.repository.save({ ...messsage, isReaded: true });
+    return this.repository.save({ ...message, isReaded: true });
   }
 
   // find messages by dialog id
   async getMessages(id: number): Promise<MessageEntity[]> {
-    return await this.repository.find({
+    return this.repository.find({
       where: { dialog: { id } },
-      relations: { sender: true, dialog: true },
+      relations: { senderTutor: true, senderStudent: true, dialog: true },
       select: {
-        sender: { id: true, name: true },
+        senderTutor: { id: true, name: true, avatarUrl: true },
+        senderStudent: { id: true, name: true, avatarUrl: true },
         dialog: { id: true },
+        userRole: true,
+        text: true,
+        id: true,
       },
       order: { sendAt: 'ASC' },
     });
