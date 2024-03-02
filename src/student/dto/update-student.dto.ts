@@ -3,6 +3,9 @@ import { CreateStudentDto } from './create-student.dto';
 
 export class UpdateStudentDto {
   @ApiProperty()
+  avatarUrl?: string;
+
+  @ApiProperty()
   name?: string;
 
   @ApiProperty()

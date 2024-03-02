@@ -6,6 +6,9 @@ export class UpdateTutorDto {
   name?: string;
 
   @ApiProperty()
+  avatarUrl?: string;
+
+  @ApiProperty()
   email?: string;
 
   @ApiProperty()

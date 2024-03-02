@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs').promises;
 import { google } from 'googleapis';
@@ -10,6 +11,7 @@ import { ReservedLessonEntity } from './entities/reserved-lesson.entity';
 import { CreateReservedLessonDto } from './dto/create-reserved-lesson.dto';
 import { UpdateReservedLessonDto } from './dto/update-reserved-lesson.dto';
 import { FilterReservedLessonDto } from './dto/filter-reserved-lessons.dto';
+import { PaymentBodyDto } from './dto/PaymentBody.dto';
 
 const TOKEN_PATH = path.join(process.cwd(), 'src/reserved-lessons/token.json');
 const CREDENTIALS_PATH = path.join(
@@ -188,8 +190,8 @@ export class ReservedLessonsService {
       where: { id },
       relations: { tutor: true, student: true, files: true },
       select: {
-        tutor: { id: true, name: true },
-        student: { id: true, name: true },
+        tutor: { id: true, name: true, avatarUrl: true },
+        student: { id: true, name: true, avatarUrl: true },
         files: {
           id: true,
           originalName: true,
@@ -214,6 +216,51 @@ export class ReservedLessonsService {
       ...lesson,
       ...dto,
     });
+  }
+
+  async paymentHandler(dto: PaymentBodyDto) {
+    const fondyPassword = 'test';
+
+    const order_id = `name=${dto.name}//duration=${dto.duration}//price=${dto.price}//startAt=${dto.startAt}//student=${dto.student}//tutor=${dto.tutor}//createdAt=${Date.now()}`;
+
+    const orderBody = {
+      // response_url: 'http://localhost:5173/',
+      // server_callback_url:
+      //   'http://localhost:7777/reserved-lessons/payment/confirmation',
+      server_callback_url: `https://48b7-2a02-2378-1231-eff1-3807-2686-f38d-26fd.ngrok-free.app/reserved-lessons/payment/confirmation`,
+      order_id: order_id,
+      merchant_id: '1396424',
+      order_desc: dto.name,
+      amount: dto.price * 100,
+      currency: 'UAH',
+    };
+
+    const orderKeys = Object.keys(orderBody).sort((a, b) => {
+      if (a < b) return -1;
+      if (a > b) return 1;
+      return 0;
+    });
+
+    const signatureRaw = orderKeys.map((v) => orderBody[v]).join('|');
+    const sugnature = crypto.createHash('sha1');
+
+    sugnature.update(`${fondyPassword}|${signatureRaw}`);
+
+    const json = JSON.stringify({
+      request: { ...orderBody, signature: sugnature.digest('hex') },
+    });
+
+    const response = await fetch('https://pay.fondy.eu/api/checkout/url/', {
+      body: json,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    });
+
+    const data = await response.json();
+
+    return data;
   }
 
   async remove(id: number) {

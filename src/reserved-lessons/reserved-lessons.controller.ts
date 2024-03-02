@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Res,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
@@ -15,6 +16,7 @@ import { ReservedLessonsService } from './reserved-lessons.service';
 import { CreateReservedLessonDto } from './dto/create-reserved-lesson.dto';
 import { UpdateReservedLessonDto } from './dto/update-reserved-lesson.dto';
 import { FilterReservedLessonDto } from './dto/filter-reserved-lessons.dto';
+import { PaymentBodyDto } from './dto/PaymentBody.dto';
 
 @Controller('reserved-lessons')
 @ApiTags('reserved-lessons')
@@ -33,6 +35,49 @@ export class ReservedLessonsController {
   @Post('/get')
   findAll(@Body() dto: FilterReservedLessonDto) {
     return this.reservedLessonsService.findAll(dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Post('/payment')
+  paymentHandler(@Body() dto: PaymentBodyDto) {
+    return this.reservedLessonsService.paymentHandler(dto);
+  }
+
+  @Post('/payment/confirmation')
+  paymentConfirmation(@Body() dto: any) {
+    if (dto.order_status === 'approved') {
+      const orderDataString = dto.order_id;
+
+      const ordersFieldsArray = orderDataString.split('//').map((el) => {
+        const substr = el.split('=');
+        if (
+          substr[0] === 'tutor' ||
+          substr[0] === 'student' ||
+          substr[0] === 'duration' ||
+          substr[0] === 'price'
+        ) {
+          return { [substr[0]]: Number(substr[1]) };
+        } else {
+          return { [substr[0]]: substr[1] };
+        }
+      });
+
+      const orderData = ordersFieldsArray.reduce((obj, item) => {
+        const key = Object.keys(item)[0];
+        if (key && typeof item[key] !== 'undefined') {
+          obj[key] = item[key];
+        }
+        return obj;
+      }, {});
+
+      return this.reservedLessonsService.create({
+        ...orderData,
+        theme: '',
+        status: 'planned',
+      });
+    }
+    return dto;
   }
 
   @UseGuards(JwtAuthGuard)

@@ -5,6 +5,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { FileEntity } from './entities/file.entity';
 import { AuthService } from 'src/auth/auth.service';
+import { TutorsService } from 'src/tutors/tutors.service';
+import { StudentService } from 'src/student/student.service';
 
 @Injectable()
 export class FilesService {
@@ -12,6 +14,8 @@ export class FilesService {
     @InjectRepository(FileEntity)
     private repository: Repository<FileEntity>,
     private authService: AuthService,
+    private tutorsService: TutorsService,
+    private studenstService: StudentService,
   ) {}
 
   async create(file: Express.Multer.File, headers: any, lessonId: number) {
@@ -40,6 +44,23 @@ export class FilesService {
         size: true,
       },
     });
+  }
+
+  async uploadAvatar(file: Express.Multer.File, headers: any) {
+    const token = headers.authorization.replace('Bearer ', '');
+    const userData = this.authService.decodeToken(token);
+
+    if (userData.userRole === 'tutor') {
+      await this.tutorsService.update(userData.id, {
+        avatarUrl: file.filename,
+      });
+      return { ...userData, avatarUrl: file.filename };
+    } else {
+      await this.studenstService.update(userData.id, {
+        avatarUrl: file.filename,
+      });
+      return { ...userData, avatarUrl: file.filename };
+    }
   }
 
   findAll(lessonId: number) {
