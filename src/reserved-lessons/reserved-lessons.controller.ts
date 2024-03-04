@@ -45,7 +45,7 @@ export class ReservedLessonsController {
   }
 
   @Post('/payment/confirmation')
-  paymentConfirmation(@Body() dto: any) {
+  async paymentConfirmation(@Body() dto: any) {
     if (dto.order_status === 'approved') {
       const orderDataString = dto.order_id;
 
@@ -71,12 +71,20 @@ export class ReservedLessonsController {
         return obj;
       }, {});
 
+      const sameLessonExist = await this.reservedLessonsService.findByStartDate(
+        orderData.tutor,
+        orderData.startAt,
+      );
+
+      if (sameLessonExist) return dto;
+
       return this.reservedLessonsService.create({
         ...orderData,
         theme: '',
         status: 'planned',
       });
     }
+
     return dto;
   }
 

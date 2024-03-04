@@ -20,6 +20,12 @@ export class DialogsService {
     return this.repository.save(dialog);
   }
 
+  checkIsExist(tutorId: number, studentId: number) {
+    return this.repository.findOne({
+      where: { tutor: { id: tutorId }, student: { id: studentId } },
+    });
+  }
+
   findAll(userRole: 'tutor' | 'student', id: number) {
     let fieldName = userRole === 'tutor' ? 'isTutorDelete' : 'isStudentDelete';
 

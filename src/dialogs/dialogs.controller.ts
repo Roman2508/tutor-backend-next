@@ -34,6 +34,14 @@ export class DialogsController {
     return this.dialogsService.findAll(userRole, +id);
   }
 
+  @Get('/check-is-exist/:tutorId/:studentId')
+  checkIsExist(
+    @Param('tutorId') tutorId: string,
+    @Param('studentId') studentId: string,
+  ) {
+    return this.dialogsService.checkIsExist(+tutorId, +studentId);
+  }
+
   @Delete(':id/:userRole')
   remove(
     @Param('id') id: string,

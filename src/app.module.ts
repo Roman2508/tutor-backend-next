@@ -27,11 +27,11 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'tai.db.elephantsql.com',
-      port: 5432,
-      username: 'rsmvjyrs',
-      password: 'GVoDIuAEKabWtvvM_qB365yDOI_XiN8H',
-      database: 'rsmvjyrs',
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT) || 5432,
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       entities: [
         TutorEntity,
         StudentEntity,
@@ -44,16 +44,6 @@ import { ConfigModule } from '@nestjs/config';
       ],
       synchronize: true,
     }),
-    /* TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT) || 5432,
-      username: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      entities: [],
-      synchronize: true,
-    }), */
     TutorsModule,
     StudentModule,
     FilesModule,
