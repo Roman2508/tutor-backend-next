@@ -46,6 +46,7 @@ export class ReservedLessonsController {
 
   @Post('/payment/confirmation')
   async paymentConfirmation(@Body() dto: any) {
+    console.log(dto)
     if (dto.order_status === 'approved') {
       const orderDataString = dto.order_id;
 
