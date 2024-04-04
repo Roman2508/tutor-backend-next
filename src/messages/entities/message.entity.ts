@@ -23,10 +23,6 @@ export class MessageEntity {
   @Column({ default: false })
   isReaded: boolean;
 
-  // @ManyToOne(() => StudentEntity || TutorEntity)
-  // @JoinColumn({ name: 'sender' })
-  // sender: StudentEntity | TutorEntity;
-
   @ManyToOne(() => TutorEntity)
   @JoinColumn({ name: 'senderTutor' })
   senderTutor: TutorEntity;

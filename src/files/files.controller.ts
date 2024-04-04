@@ -1,32 +1,25 @@
 const fs = require('fs');
 import {
-  Controller,
   Get,
   Post,
-  Body,
-  Patch,
   Param,
-  Delete,
-  UseGuards,
-  MaxFileSizeValidator,
-  ParseFilePipe,
-  UploadedFile,
-  UseInterceptors,
-  Headers,
-  Res,
-  StreamableFile,
-  BadRequestException,
   Header,
+  Delete,
+  Headers,
+  UseGuards,
+  Controller,
+  UploadedFile,
+  ParseFilePipe,
+  StreamableFile,
+  UseInterceptors,
+  MaxFileSizeValidator,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 
 import { fileStorage } from './storate';
 import { FilesService } from './files.service';
-import { UpdateFileDto } from './dto/update-file.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { Observable, of } from 'rxjs';
-import { join } from 'path';
 
 @Controller('files')
 @ApiTags('files')
@@ -60,16 +53,6 @@ export class FilesController {
   ) {
     return this.filesService.uploadAvatar(file, headers);
   }
-
-  // @Get('profile-image/:imagename')
-  // findProfileImage(
-  //   @Param('imagename') imagename: string,
-  //   @Res() res: any,
-  // ): Observable<Object> {
-  //   return of(res.sendFile(join(process.cwd(), 'uploads/' + imagename)));
-  // }
-
-  /*  */
 
   @Post(':lessonId')
   @UseInterceptors(FileInterceptor('file', { storage: fileStorage }))
