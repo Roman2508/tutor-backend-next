@@ -1,17 +1,17 @@
 const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs').promises;
-import { google } from 'googleapis';
+// import { google } from 'googleapis';
 import { InjectRepository } from '@nestjs/typeorm';
-import { authenticate } from '@google-cloud/local-auth';
+// import { authenticate } from '@google-cloud/local-auth';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Equal, FindOptionsWhereProperty, ILike, Repository } from 'typeorm';
+import { FindOptionsWhereProperty, ILike, Repository } from 'typeorm';
 
+import { PaymentBodyDto } from './dto/PaymentBody.dto';
 import { ReservedLessonEntity } from './entities/reserved-lesson.entity';
 import { CreateReservedLessonDto } from './dto/create-reserved-lesson.dto';
 import { UpdateReservedLessonDto } from './dto/update-reserved-lesson.dto';
 import { FilterReservedLessonDto } from './dto/filter-reserved-lessons.dto';
-import { PaymentBodyDto } from './dto/PaymentBody.dto';
 
 @Injectable()
 export class ReservedLessonsService {
